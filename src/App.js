@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+
+import { useEffect, useState } from 'react';
 import './App.css';
+import { Data } from './data';
+
+import Table from './table';
 
 function App() {
+  const [query,setQuery] = useState("");
+
+
+  const keys =["first_name","last_name","email"];
+
+  const search = (data) =>{
+    return data.filter((item) =>keys.some((keys)=>item[keys].toLowerCase().includes(query)))
+  }
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+    <h1 className='head'>Search Box</h1>
+    <input type='text' placeholder='search...' className='search' onChange={(e)=>setQuery(e.target.value)}/>
+    <ul className='list'>
+    
+      <Table data={search(Data).slice(0,20)}/>
+    </ul>
     </div>
   );
 }
