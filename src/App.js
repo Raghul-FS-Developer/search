@@ -1,30 +1,30 @@
 
 import { useEffect, useState } from 'react';
 import './App.css';
-import { Data } from './data';
-
+import axios from 'axios'
 import Table from './table';
 
 function App() {
-  const [query,setQuery] = useState("");
+  const [query, setQuery] = useState('');
+  const [data, setData] = useState([]);
 
-
-  const keys =["first_name","last_name","email"];
-
-  const search = (data) =>{
-    return data.filter((item) =>keys.some((keys)=>item[keys].toLowerCase().includes(query)))
-  }
-
-
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(`https://search-back.herokuapp.com?q=${query}`);
+      setData(res.data);
+    };
+    if (query.length === 0 || query.length > 2) fetchData();
+  }, [query]);
 
   return (
     <div className="app">
-    <h1 className='head'>Search Box</h1>
-    <input type='text' placeholder='search...' className='search' onChange={(e)=>setQuery(e.target.value)}/>
-    <ul className='list'>
-    
-      <Table data={search(Data).slice(0,20)}/>
-    </ul>
+       <h1 className='head'>Search Box</h1>
+        <input
+          className="search"
+          placeholder="Search..."
+          onChange={(e) => setQuery(e.target.value.toLowerCase())}
+        />
+      {<Table data={data} />}
     </div>
   );
 }
